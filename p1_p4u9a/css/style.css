@@ -6,14 +6,18 @@ body {
 
 .container {
   width: 800px;
-  height: 900px;
   margin: 0 auto;
 }
 
-ul {
-  columns: 5;
-  -webkit-columns: 4;
-  -moz-columns: 4;
+.h-label {
+  font-size: .7rem;
+}
+
+.y-axis {
+  font-family: sans-serif;
+  font-size: 14px;
+  /*font-weight: bold;*/
+  color: #222222;
 }
 
 /* Legend */
@@ -21,6 +25,8 @@ ul {
   margin: 20px 0;
   list-style: none;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 0.25fr);
 }
 .legend-btn {
   display: inline-block;
@@ -28,30 +34,57 @@ ul {
   cursor: pointer;
   transition: all ease-in-out 200ms;
 }
-.legend-btn:hover.legend-btn.inactive:hover  {
+.legend-label:hover.legend-label.inactive:hover  {
   opacity: 0.7;
 }
-.legend-btn.inactive {
+.legend-label.inactive {
   opacity: 0.5;
 }
 .legend-symbol {
   width: 12px;
   height: 12px;
+  border-radius: 50%;
+  background-color:#fff;
+  border:1px solid black;
   margin-right: 3px;
   display: inline-block;
 }
-.legend-btn[data-difficulty="winter-storm-freeze"] .legend-symbol {
+.legend-btn[data-category="winter-storm-freeze"] .legend-symbol {
+  opacity: 1;
   background: #cccccc;
 }
-.legend-btn[data-difficulty="flooding"] .legend-symbol {
+.legend-btn[data-category="flooding"] .legend-symbol {
   background: #41b6c4;
 }
-.legend-btn[data-difficulty="severe-storm"] .legend-symbol {
+.legend-btn[data-category="severe-storm"] .legend-symbol {
   background: #c7e9b4;
 }
-.legend-btn[data-difficulty="drought-wildfire"] .legend-symbol {
+.legend-btn[data-category="drought-wildfire"] .legend-symbol {
   background: #ffffd9;
 }
-.legend-btn[data-difficulty="tropical-cyclone"] .legend-symbol {
+.legend-btn[data-category="tropical-cyclone"] .legend-symbol {
   background: #081d58;
+}
+
+/* Tooltip */
+#tooltip {
+  position: absolute;
+  display: none;
+  background: #fff;
+  box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
+  border: 1px solid #ddd;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px;
+  min-width: 100px;
+  color: #333;
+}
+.tooltip-title {
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+}
+.h-cell:hover {
+  transition: stroke 200ms ease-in-out;
+  stroke: #333;
 }
