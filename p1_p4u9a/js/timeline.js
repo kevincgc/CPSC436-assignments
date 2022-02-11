@@ -34,8 +34,6 @@ class Timeline {
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
-        // Todo: Initialize scales and axes
-        //===================BEGIN=====================================================================================================================
         // Initialize scales
         vis.radiusValue = d => d.cost;
         vis.radiusScale = d3.scaleSqrt()
@@ -70,8 +68,6 @@ class Timeline {
             .ticks(30)
             .tickFormat(d3.format("d"));
 
-        //==================END======================================================================================================================
-
         // Initialize arc generator that we use to create the SVG path for the half circles.
         vis.arcGenerator = d3.arc()
             .outerRadius(d => vis.radiusScale(d))
@@ -89,15 +85,13 @@ class Timeline {
         vis.chartArea = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
-        // Todo: Append axis groups
-        //===================BEGIN====================================================================================================
+        // Append axis groups
         vis.xAxisG = vis.chartArea.append('g')
             .attr('class', 'axis month-axis')
             .attr('transform', d => `translate(-30,-20)`);
         vis.yAxisG = vis.chartArea.append('g')
             .attr('class', 'axis y-axis')
             .attr('transform', d => `translate(0,5)`);
-        //===================END====================================================================================================
 
         // Initialize clipping mask that covers the whole chart
         vis.chartArea.append('defs')
@@ -111,9 +105,6 @@ class Timeline {
         // Apply clipping mask to 'vis.chart' to clip semicircles at the very beginning and end of a year
         vis.chart = vis.chartArea.append('g')
             .attr('clip-path', 'url(#chart-mask)');
-
-        // Optional: other static elements
-        // ...
 
         vis.updateVis();
     }
@@ -134,13 +125,11 @@ class Timeline {
             d[4] = d[1].find(e => e.cost === d[2]).dayOfYear;
         });
 
-        // Specificy accessor functions
+        // Specific accessor functions
         vis.yValue = d => d[0];
         vis.yearValue = d => d.year;
         vis.xValue = d => d.dayOfYear;
         vis.monthValue = d => d.month;
-
-        console.log(vis.groupedData);
 
         vis.renderVis();
     }
@@ -208,55 +197,9 @@ class Timeline {
             });
 
         cell.exit().remove();
-        // .on('mouseover', (event,d) => {
-        //   const value = (d.value === null) ? 'No data available' : Math.round(d.value * 100) / 100;
-        //   d3.select('#tooltip')
-        //       .style('display', 'block')
-        //       .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
-        //       .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
-        //       .html(`
-        //       <div class='tooltip-title'>${d.state}</div>
-        //       <div>${d.year}: <strong>${value}</strong></div>
-        //     `);
-        // })
-        // .on('mouseleave', () => {
-        //   d3.select('#tooltip').style('display', 'none');
-        // });
-
-        // // 2b) Diagonal lines for NA values
-        // const cellNa = row.merge(rowEnter).selectAll('.h-cell-na')
-        //     .data(d => d[1].filter(k => k.value === null));
-        //
-        // const cellNaEnter = cellNa.enter().append('line')
-        //     .attr('class', 'h-cell-na');
-        //
-        // cellNaEnter.merge(cellNa)
-        //     .attr('x1', d => vis.xScale(vis.xValue(d)))
-        //     .attr('x2', d => vis.xScale(vis.xValue(d)) + cellWidth)
-        //     .attr('y1', vis.yScale.bandwidth())
-        //     .attr('y2', 0);
-        //
-        // // Set the positions of the annotations
-        // const xVaccineIntroduced = vis.xScale(vis.config.vaccineIntroduced);
-        // vis.vaccineLine
-        //     .attr('x1', xVaccineIntroduced)
-        //     .attr('x2', xVaccineIntroduced)
-        //     .attr('y1', -5)
-        //     .attr('y2', vis.config.height);
-        //
-        // vis.vaccineLabel.attr('x', xVaccineIntroduced);
 
         // Update axis
         vis.xAxisG.call(vis.xAxis).call(g => g.select('.domain').remove());
         vis.yAxisG.call(vis.yAxis).call(g => g.select('.domain').remove());
-        // Todo
     }
-
-    // renderLegend() {
-    //   let vis = this;
-    //
-    //   // Todo: Display the disaster category legend that also serves as an interactive filter.
-    //   // You can add the legend also to `index.html` instead and have your event listener in `main.js`.
-    // }
-
 }

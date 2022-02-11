@@ -11,18 +11,15 @@ d3.csv('data/disaster_costs.csv').then(_data => {
     d.cost = +d.cost;
     d.year = +d.year;
     d.date = parseTime(d.mid);
-
     let yearStart = new Date(d.year, 0, 0);
     d.dayOfYear = d3.timeDay.count(yearStart, d.date);
     d.month = monthLabels[d.date.getMonth()];
-    // Optional: other data preprocessing steps
   });
-  console.log(data);
+
   timeline = new Timeline({
     parentElement: '#vis',
     disasterCategories: disasterCategories,
     monthLabels: monthLabels,
-    // Optional: other configurations
   }, data);
 
 }).catch(error => console.error(error));
@@ -36,10 +33,13 @@ d3.selectAll('.legend-label').on('click', function() {
   d3.selectAll('.legend-label:not(.inactive)').each(function() {
     timeline.selectedCategories.push(d3.select(this).attr('data-category'));
   });
+
+  // All categories are active if none selected
   if (timeline.selectedCategories.length === 0) {
     timeline.selectedCategories = disasterCategories;
   }
-  console.log(timeline.selectedCategories);
+
+  // Filter data + update vis
   timeline.data = data.filter(d => timeline.selectedCategories.includes(d.category));
   timeline.updateVis();
 });
