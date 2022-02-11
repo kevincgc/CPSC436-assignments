@@ -6,5 +6,52 @@ body {
 
 .container {
   width: 800px;
+  height: 900px;
   margin: 0 auto;
+}
+
+ul {
+  columns: 5;
+  -webkit-columns: 4;
+  -moz-columns: 4;
+}
+
+/* Legend */
+.legend {
+  margin: 20px 0;
+  list-style: none;
+  padding: 0;
+}
+.legend-btn {
+  display: inline-block;
+  margin: 0 20px 0 0;
+  cursor: pointer;
+  transition: all ease-in-out 200ms;
+}
+.legend-btn:hover.legend-btn.inactive:hover  {
+  opacity: 0.7;
+}
+.legend-btn.inactive {
+  opacity: 0.5;
+}
+.legend-symbol {
+  width: 12px;
+  height: 12px;
+  margin-right: 3px;
+  display: inline-block;
+}
+.legend-btn[data-difficulty="winter-storm-freeze"] .legend-symbol {
+  background: #cccccc;
+}
+.legend-btn[data-difficulty="flooding"] .legend-symbol {
+  background: #41b6c4;
+}
+.legend-btn[data-difficulty="severe-storm"] .legend-symbol {
+  background: #c7e9b4;
+}
+.legend-btn[data-difficulty="drought-wildfire"] .legend-symbol {
+  background: #ffffd9;
+}
+.legend-btn[data-difficulty="tropical-cyclone"] .legend-symbol {
+  background: #081d58;
 }
