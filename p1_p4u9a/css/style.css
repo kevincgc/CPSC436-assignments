@@ -9,6 +9,15 @@ body {
   margin: 0 auto;
 }
 
+h1 {
+  margin-top: 0;
+  font-family: 'Castoro', serif;
+  font-style: italic;
+  font-size: 2rem;
+  word-spacing: 0.15em;
+  text-align: center;
+}
+
 .h-label {
   font-size: .7rem;
 }
@@ -17,7 +26,10 @@ body {
   font-family: sans-serif;
   font-size: 14px;
   /*font-weight: bold;*/
-  color: #222222;
+  color: #555555;
+}
+.month-axis {
+  color: #555555;
 }
 
 /* Legend */
@@ -27,6 +39,7 @@ body {
   padding: 0;
   display: grid;
   grid-template-columns: repeat(2, 0.25fr);
+  color: #222222;
 }
 .legend-btn {
   display: inline-block;
@@ -41,16 +54,15 @@ body {
   opacity: 0.5;
 }
 .legend-symbol {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background-color:#fff;
-  border:1px solid black;
+  border:1px solid #777777;
   margin-right: 3px;
   display: inline-block;
 }
 .legend-btn[data-category="winter-storm-freeze"] .legend-symbol {
-  opacity: 1;
   background: #cccccc;
 }
 .legend-btn[data-category="flooding"] .legend-symbol {

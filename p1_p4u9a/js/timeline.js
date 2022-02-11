@@ -61,7 +61,7 @@ class Timeline {
         // Initialize axes
         vis.xAxis = d3.axisTop(vis.monthScale)
             .tickValues(vis.config.monthLabels)
-            .tickSize(15)
+            .tickSize(12)
             .tickPadding(5);
 
         vis.yAxis = d3.axisLeft(vis.yScale)
@@ -93,7 +93,7 @@ class Timeline {
         //===================BEGIN====================================================================================================
         vis.xAxisG = vis.chartArea.append('g')
             .attr('class', 'axis month-axis')
-            .attr('transform', d => `translate(-30,-30)`);
+            .attr('transform', d => `translate(-30,-20)`);
         vis.yAxisG = vis.chartArea.append('g')
             .attr('class', 'axis y-axis')
             .attr('transform', d => `translate(0,5)`);
