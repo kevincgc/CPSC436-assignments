@@ -20,7 +20,6 @@ class Timeline {
         }
         this.colors = ["#ccc", "#41b6c4", "#c7e9b4", "#ffffd9", "#081d58"];
         this.data = _data;
-        this.selectedCategories = [];
         this.initVis();
     }
 
