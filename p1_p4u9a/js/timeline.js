@@ -165,17 +165,16 @@ class Timeline {
             .text(d => d[3]);
 
         // 2) Actual cells
-        const cell = row.merge(rowEnter).selectAll('.h-cell')
+        const cell = row.merge(rowEnter).selectAll('.mark')
             .data(d => d[1]);
 
         // Enter
         const cellEnter = cell.enter().append('path')
-            .attr('class', 'h-cell');
+            .attr('class', 'mark');
 
         // Enter + update
         cellEnter.merge(cell)
             .attr('d', d => vis.arcGenerator(d.cost))
-            .attr('class', 'h-label')
             .attr('transform', d => `translate(${vis.xScale(vis.xValue(d))},0)`)
             .attr('fill', d => vis.colorScale(d.category))
             .attr("fill-opacity", "0.6")
