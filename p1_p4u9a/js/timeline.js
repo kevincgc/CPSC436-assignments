@@ -119,6 +119,7 @@ class Timeline {
         // [['1980', [array with values]], ['1981', [array with values]], ...]
         vis.groupedData = d3.groups(vis.data, d => d.year);
 
+        // Label display max cost for each group
         vis.groupedData.forEach(d => {
             d[2] = d3.max(d[1], k => k.cost);
             d[3] = d[1].find(e => e.cost === d[2]).name;
@@ -140,39 +141,40 @@ class Timeline {
     renderVis() {
         let vis = this;
 
-        // 1. Level: rows
+        // Rows
         const row = vis.chart.selectAll('.h-row')
             .data(vis.groupedData, d => d[0]);
 
-        // Enter
+        // Enter + Update + Exit
         const rowEnter = row.enter().append('g')
             .attr('class', 'h-row');
-
-        // Enter + update
         rowEnter.merge(row)
             .attr('transform', d => `translate(0,${vis.yScale(vis.yValue(d)) + 5})`);
-
-        // Exit
         row.exit().remove();
 
-        // Append row label (y-axis)
-        rowEnter.append('text')
+        // Text
+        const text = vis.chart.selectAll('text')
+            .data(vis.groupedData, d => d[1]);
+
+        // Enter + Update + Exit
+        const textEnter = text.enter().append('text')
+            .attr('class', 'h-label');
+        textEnter.merge(text)
             .attr('class', 'h-label')
-            .attr('dy', 12)
+            .attr('dy', 18)
             .attr('text-anchor', 'middle')
             .attr('x', d => vis.xScale(d[4]))
-            .attr('y', d => console.log(vis.yScale(d[0])))
+            .attr('y', d => vis.yScale(d[0]))
             .text(d => d[3]);
+        text.exit().remove();
 
-        // 2) Actual cells
+        // Marks
         const cell = row.merge(rowEnter).selectAll('.mark')
             .data(d => d[1]);
 
-        // Enter
+        // Enter + Update + Exit
         const cellEnter = cell.enter().append('path')
             .attr('class', 'mark');
-
-        // Enter + update
         cellEnter.merge(cell)
             .attr('d', d => vis.arcGenerator(d.cost))
             .attr('transform', d => `translate(${vis.xScale(vis.xValue(d))},0)`)
@@ -192,8 +194,6 @@ class Timeline {
             .on('mouseleave', () => {
                 d3.select('#tooltip').style('display', 'none');
             });
-
-        // Exit
         cell.exit().remove();
 
         // Update axis

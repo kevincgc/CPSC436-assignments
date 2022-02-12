@@ -24,6 +24,7 @@ d3.csv('data/disaster_costs.csv').then(_data => {
 
 }).catch(error => console.error(error));
 
+// Toggle categories callback
 d3.selectAll('.legend-label').on('click', function() {
   // Toggle 'inactive' class
   d3.select(this).classed('inactive', !d3.select(this).classed('inactive'));
