@@ -175,6 +175,7 @@ class Timeline {
         // Enter + update
         cellEnter.merge(cell)
             .attr('d', d => vis.arcGenerator(d.cost))
+            .attr('class', 'h-label')
             .attr('transform', d => `translate(${vis.xScale(vis.xValue(d))},0)`)
             .attr('fill', d => vis.colorScale(d.category))
             .attr("fill-opacity", "0.6")
