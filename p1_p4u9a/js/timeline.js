@@ -164,16 +164,13 @@ class Timeline {
             .attr('y', d => console.log(vis.yScale(d[0])))
             .text(d => d[3]);
 
-        // 2. Level: columns
-
-        // 2a) Actual cells
+        // 2) Actual cells
         const cell = row.merge(rowEnter).selectAll('.h-cell')
             .data(d => d[1]);
 
         // Enter
         const cellEnter = cell.enter().append('path')
             .attr('class', 'h-cell');
-
 
         // Enter + update
         cellEnter.merge(cell)
@@ -196,6 +193,7 @@ class Timeline {
                 d3.select('#tooltip').style('display', 'none');
             });
 
+        // Exit
         cell.exit().remove();
 
         // Update axis
