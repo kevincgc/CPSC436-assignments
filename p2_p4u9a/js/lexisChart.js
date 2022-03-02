@@ -10,7 +10,7 @@ class LexisChart {
             parentElement: _config.parentElement,
             containerWidth: 1000,
             containerHeight: 380,
-            margin: {top: 15, right: 15, bottom: 20, left: 25},
+            margin: {top: 20, right: 20, bottom: 25, left: 35},
             tooltipPadding: _config.tooltipPadding || 15
         }
         this.data = _data;
@@ -51,13 +51,38 @@ class LexisChart {
         // Initialize axes
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(6)
-            .tickSize(-vis.height - 10);
+            .tickFormat(d3.format(".0f"));
+            //.tickSize(-vis.height - 10);
         // .tickPadding(10)
         // .tickFormat(d => d + ' km');
 
         vis.yAxis = d3.axisLeft(vis.yScale)
             .ticks(6)
-            .tickSize(-vis.width - 10)
+            //.tickSize(-vis.width - 10)
+
+        // Append empty x-axis group and move it to the bottom of the chart
+        vis.xAxisG = vis.chart.append('g')
+            .attr('class', 'axis x-axis')
+            .attr('transform', `translate(0,${vis.height})`);
+
+        // Append y-axis group
+        vis.yAxisG = vis.chart.append('g')
+            .attr('class', 'axis y-axis');
+
+        // Initialize clipping mask that covers the whole chart
+        vis.chartArea.append('defs')
+            .append('clipPath')
+            .attr('id', 'chart-mask')
+            .append('rect')
+            .attr('width', vis.width+ 5)
+            .attr('y', -vis.config.margin.top)
+            .attr('height', vis.config.containerHeight);
+
+        // Apply clipping mask to 'vis.chart' to clip semicircles at the very beginning and end of a year
+        vis.chart = vis.chartArea.append('g')
+            .attr('clip-path', 'url(#chart-mask)');
+
+        vis.appendMarkers(vis);
         //.tickPadding(10);
     }
 
@@ -92,18 +117,18 @@ class LexisChart {
             .attr("y1", d => vis.yScale(vis.yStartValue(d)))
             .attr("x2", d => vis.xScale(vis.xEndValue(d)))
             .attr("y2", d => vis.yScale(vis.yEndValue(d)))
-            .attr('marker-end', d => idFilter.includes(d.id) ? vis.marker("#FFA500", vis) :
-                (d.label === 1 ? vis.marker("#999", vis) : vis.marker("#ddd", vis)))
-            .style("stroke", d => idFilter.includes(d.id) ? "#FFA500" : (d.label === 1 ? "#999" : "#ddd"))
-            .style("stroke-width", d => (d.label === 1 || idFilter.includes(d.id)) ? 4 : 1);
+            .attr('marker-end', d => idFilter.includes(d.id) ? "url(#FFA500)":
+                (d.label === 1 ? "url(#999)" : "url(#ddd)"))
+            .style("stroke", d => idFilter.includes(d.id) ? "#FFA500" : (d.label === 1 ? "#A4A5C2" : "#ddd"))
+            .style("stroke-width", d => (d.label === 1 || idFilter.includes(d.id)) ? 3 : 1);
 
         lines
             .on('mouseover', function (event, d) {
                 if (!idFilter.includes(d.id)) {
                     d3.select(this)
-                        .style("stroke", "#999")
+                        .style("stroke", "#A4A5C2")
                         .style("stroke-width", 3)
-                        .attr('marker-end', vis.marker("#999", vis));
+                        .attr('marker-end', "url(#999)");
                 }
                 d3.select('#tooltip')
                 .style('display', 'block')
@@ -124,7 +149,7 @@ class LexisChart {
                     d3.select(this)
                         .style("stroke", "#ddd")
                         .style("stroke-width", 1)
-                        .attr('marker-end', d => d.label === 1 ? vis.marker("#999", vis) : vis.marker("#ddd", vis));
+                        .attr('marker-end', d => d.label === 1 ? "url(#999)" : "url(#ddd)");
                 }
                 d3.select('#tooltip').style('display', 'none');
             })
@@ -133,13 +158,38 @@ class LexisChart {
                     updateSelection(d);
                 }
             });
+
+        const text = vis.chart.selectAll('.labels')
+            .data(vis.filteredData, d => d)
+            .join('text')
+            .attr('class', 'labels')
+            .attr('transform', d =>
+                `translate(${vis.xScale(vis.xStartValue(d)) + 3},${vis.yScale(vis.yStartValue(d)) - 7}) rotate(-20)`)
+            .text(d => d.label === 1 ? d.leader: "");
+
+        // Update the axes/gridlines
+        // We use the second .call() to remove the axis and just show gridlines
+        vis.xAxisG
+            .call(vis.xAxis)
+            .call(g => g.select('.domain').remove());
+
+        vis.yAxisG
+            .call(vis.yAxis)
+            .call(g => g.select('.domain').remove());
+
+        vis.svg.append('text')
+            .attr('class', 'axis-title')
+            .attr('x', 10)
+            .attr('y', 10)
+            .attr('dy', '.71em')
+            .text('Age');
     }
 
-    marker(color, vis) {
+    appendMarkers(vis) {
         // Create default arrow head
         // Can be applied to SVG lines using: `marker-end`
         vis.chart.append('defs').append('marker')
-            .attr('id', color.replace("#", ""))
+            .attr('id', 'FFA500')
             .attr('markerUnits', 'strokeWidth')
             .attr('refX', '2')
             .attr('refY', '2')
@@ -148,8 +198,32 @@ class LexisChart {
             .attr('orient', 'auto')
             .append('path')
             .attr('d', 'M0,0 L2,2 L 0,4')
-            .attr('stroke', color)
+            .attr('stroke', '#FFA500')
             .attr('fill', 'none');
-        return "url(" + color + ")";
+        vis.chart.append('defs').append('marker')
+            .attr('id', '999')
+            .attr('markerUnits', 'strokeWidth')
+            .attr('refX', '2')
+            .attr('refY', '2')
+            .attr('markerWidth', '10')
+            .attr('markerHeight', '10')
+            .attr('orient', 'auto')
+            .append('path')
+            .attr('d', 'M0,0 L2,2 L 0,4')
+            .attr('stroke', '#999')
+            .attr('fill', 'none');
+        vis.chart.append('defs').append('marker')
+            .attr('id', 'ddd')
+            .attr('markerUnits', 'strokeWidth')
+            .attr('refX', '2')
+            .attr('refY', '2')
+            .attr('markerWidth', '10')
+            .attr('markerHeight', '10')
+            .attr('orient', 'auto')
+            .append('path')
+            .attr('d', 'M0,0 L2,2 L 0,4')
+            .attr('stroke', '#ddd')
+            .attr('fill', 'none');
+        //return "url(" + color + ")";
     }
 }

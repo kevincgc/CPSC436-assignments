@@ -56,21 +56,19 @@ d3.select('#country-selector').on('change', function() {
 function filterByGender() {
   scatterplot.updateVis();
   lexischart.updateVis();
+  barchart.renderVis();
 }
 
 function updateSelection(d) {
   if (d === null) {
     idFilter = [];
-    console.log("clear");
   } else if (idFilter.includes(d.id)) {
     idFilter = idFilter.filter(e => e !== d.id);
-    console.log(idFilter);
   } else {
     idFilter.push(d.id);
-    console.log(idFilter);
   }
-  scatterplot.updateVis();
-  lexischart.updateVis();
+  scatterplot.renderVis();
+  lexischart.renderVis();
 }
 /*
  * Todo:

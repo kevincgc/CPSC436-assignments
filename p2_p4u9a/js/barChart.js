@@ -30,10 +30,10 @@ class BarChart {
     // Initialize scales and axes
     // Important: we flip array elements in the y output range to position the rectangles correctly
     vis.yScale = d3.scaleLinear()
-        .range([vis.height, 0])
+        .range([vis.height, 20])
 
     vis.xScale = d3.scaleBand()
-        .range([0, vis.width])
+        .range([10, vis.width - 20])
         .paddingInner(0.2);
 
     vis.xAxis = d3.axisBottom(vis.xScale)
@@ -41,7 +41,8 @@ class BarChart {
 
     vis.yAxis = d3.axisLeft(vis.yScale)
         .ticks(6)
-        .tickSizeOuter(0);
+        .tickSizeOuter(0)
+        .tickSize(-vis.width + 10);
         //.tickFormat(d3.formatPrefix('.0s', 1e6)); // Format y-axis ticks as millions
 
     // Define size of SVG drawing area
@@ -62,6 +63,14 @@ class BarChart {
     // Append y-axis group
     vis.yAxisG = vis.chart.append('g')
         .attr('class', 'axis y-axis');
+
+    // Append both axis titles
+    vis.svg.append('text')
+        .attr('class', 'axis-title')
+        .attr('x', 10)
+        .attr('y', 10)
+        .attr('dy', '.71em')
+        .text('Gender');
   }
 
   /**
@@ -108,19 +117,21 @@ class BarChart {
         });
 
     bars.style('opacity', 0.5)
-        .transition().duration(1000)
         .style('opacity', 1)
         .attr('class', 'bar')
         .attr('x', d => vis.xScale(vis.xValue(d)))
         .attr('width', vis.xScale.bandwidth())
         .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
         .attr('y', d => vis.yScale(vis.yValue(d)))
+        .attr('fill', d => (genderFilter === d.gender) ? '#666280' : '#A4A5C2');
 
 
     // Update axes
-    vis.xAxisG.transition().duration(1000)
-        .call(vis.xAxis);
+    vis.xAxisG
+        .call(vis.xAxis)
+        .call(g => g.select('.domain').remove());
 
-    vis.yAxisG.call(vis.yAxis);
+    vis.yAxisG.call(vis.yAxis)
+        .call(g => g.select('.domain').remove());
   }
 }
