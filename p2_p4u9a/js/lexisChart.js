@@ -10,7 +10,8 @@ class LexisChart {
             parentElement: _config.parentElement,
             containerWidth: 1000,
             containerHeight: 380,
-            margin: {top: 15, right: 15, bottom: 20, left: 25}
+            margin: {top: 15, right: 15, bottom: 20, left: 25},
+            tooltipPadding: _config.tooltipPadding || 15
         }
         this.data = _data;
         this.initVis();
@@ -91,9 +92,10 @@ class LexisChart {
             .attr("y1", d => vis.yScale(vis.yStartValue(d)))
             .attr("x2", d => vis.xScale(vis.xEndValue(d)))
             .attr("y2", d => vis.yScale(vis.yEndValue(d)))
-            .attr('marker-end', d => d.label === 1 ? vis.marker("#999", vis) : vis.marker("#ddd", vis))
-            .style("stroke", d => d.label === 1 ? "#999" : "#ddd")
-            .style("stroke-width", d => d.label === 1 ? 3 : 1);
+            .attr('marker-end', d => idFilter.includes(d.id) ? vis.marker("#FFA500", vis) :
+                (d.label === 1 ? vis.marker("#999", vis) : vis.marker("#ddd", vis)))
+            .style("stroke", d => idFilter.includes(d.id) ? "#FFA500" : (d.label === 1 ? "#999" : "#ddd"))
+            .style("stroke-width", d => (d.label === 1 || idFilter.includes(d.id)) ? 4 : 1);
 
         lines
             .on('mouseover', function (event, d) {
