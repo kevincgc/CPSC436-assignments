@@ -1,1 +1,86 @@
 /* Todo: add styles */
+/* bar */
+.bar {
+    fill: #A4A5C2;
+    shape-rendering: crispEdges;
+}
+.bar:hover {
+    fill: #A4A5C2;
+    transition: fill ease-in-out 200ms;
+    outline-style: solid;
+}
+
+/*scatter*/
+.point.active:hover,
+.point.selected:hover {
+    stroke: #222;
+    fill-opacity: 1;
+}
+/*body {*/
+/*    padding: 30px;*/
+/*    background: #f8f8f8;*/
+/*}*/
+/*.container {*/
+/*    width: 740px;*/
+/*    margin: 0 auto;*/
+/*}*/
+/*#footer {*/
+/*    font-size: 11px;*/
+/*    display: flex;*/
+/*}*/
+/*#footer .footer-col {*/
+/*    flex: 1;*/
+/*}*/
+/*h1 {*/
+/*    font-family: 'Lora', serif;*/
+/*    font-size: 1.4rem;*/
+/*}*/
+
+/*.axis text {*/
+/*    fill: #666;*/
+/*    font-size: 12px;*/
+/*}*/
+/*.axis path {*/
+/*    shape-rendering: crispEdges;*/
+/*    stroke: #888;*/
+/*}*/
+/*.y-axis path {*/
+/*    display: none;*/
+/*}*/
+/*.axis line {*/
+/*    display: none;*/
+/*}*/
+/*.btn {*/
+/*    font-size: 11px;*/
+/*    color: #adadad;*/
+/*}*/
+/*#sorting:hover, #sorting:focus {*/
+/*    text-decoration: none;*/
+/*    box-shadow: none;*/
+/*}*/
+/*#sorting img {*/
+/*    opacity: 0.8;*/
+/*}*/
+
+/* Tooltip */
+#tooltip {
+    position: absolute;
+    display: none;
+    background: #fff;
+    box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
+    border: 1px solid #ddd;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px;
+    min-width: 160px;
+    color: #333;
+}
+.tooltip-title {
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+}
+#tooltip ul {
+    margin: 5px 0 0 0;
+    padding-left: 20px;
+}
