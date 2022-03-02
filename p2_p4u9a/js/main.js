@@ -41,11 +41,13 @@ d3.select('#country-selector').on('change', function() {
   filteredData = data.filter(d => d[selection] === 1 && d.duration > 0);
 
   // Update chart
+  genderFilter = "None";
   barchart.data = filteredData;
   barchart.updateVis();
-  scatterplot.data = filteredData;
-  genderFilter = "None";
-  filterByGender();
+  scatterplot.data = filteredData.filter(d => d.pcgdp !== null);
+  scatterplot.updateVis();
+  lexischart.data = filteredData;
+  lexischart.updateVis();
 });
 
 /**
@@ -53,10 +55,14 @@ d3.select('#country-selector').on('change', function() {
  */
 function filterByGender() {
   scatterplot.updateVis();
+  lexischart.updateVis();
 }
 
 function updateSelection(d) {
-  if (idFilter.includes(d.id)) {
+  if (d === null) {
+    idFilter = [];
+    console.log("clear");
+  } else if (idFilter.includes(d.id)) {
     idFilter = idFilter.filter(e => e !== d.id);
     console.log(idFilter);
   } else {
@@ -64,6 +70,7 @@ function updateSelection(d) {
     console.log(idFilter);
   }
   scatterplot.updateVis();
+  lexischart.updateVis();
 }
 /*
  * Todo:

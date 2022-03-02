@@ -50,7 +50,10 @@ class ScatterPlot {
     vis.svg = d3.select(vis.config.parentElement).append('svg')
         .attr('id', 'scatter-plot')
         .attr('width', vis.config.containerWidth)
-        .attr('height', vis.config.containerHeight);
+        .attr('height', vis.config.containerHeight)
+        .on('click', function() {
+            updateSelection(null);
+        });
 
     // Append group element that will contain our actual chart
     // and position it according to the given margin config
@@ -152,6 +155,7 @@ class ScatterPlot {
             d3.select('#tooltip').style('display', 'none');
         })
         .on('click', function(event, d) {
+          event.stopPropagation();
           if (d.gender === genderFilter || genderFilter === "None") {
             updateSelection(d);
           }

@@ -18,3 +18,6 @@ marks, since the horizontally lined cells were similar in layout to the semicirc
 **D3 Case Study: Drought and Deluge in the Lower 48:**  
 https://github.com/UBC-InfoVis/436V-materials/tree/22Jan/case-studies/case-study_drought  
 I used this to help understand how to show the dynamic labels and how to format my top axis.
+
+https://stackoverflow.com/questions/32964457/match-arrowhead-color-to-line-color-in-d3
+I used this to modify the marker color without having to copy paste the code a bunch of times.
