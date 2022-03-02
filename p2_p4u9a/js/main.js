@@ -27,10 +27,10 @@ d3.csv('data/leaderlist.csv').then(_data => {
     parentElement: '#vis-scatter'
   }, filteredData.filter(d => d.pcgdp !== null));
   scatterplot.updateVis();
-  // lexischart = new LexisChart({
-  //   parentElement: '#vis-lexis'
-  // }, filteredData);
-  // lexischart.updateVis();
+  lexischart = new LexisChart({
+    parentElement: '#vis-lexis'
+  }, filteredData);
+  lexischart.updateVis();
 }).catch(error => console.error(error));
 
 /**

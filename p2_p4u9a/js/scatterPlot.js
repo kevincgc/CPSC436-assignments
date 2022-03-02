@@ -117,8 +117,10 @@ class ScatterPlot {
         .attr('fill', d => (d.gender === genderFilter || genderFilter === "None") ?
             (idFilter.includes(d.id) ? "#FFA500" : "#333355") : "#333355")
         .attr("fill-opacity", d => (d.gender === genderFilter || genderFilter === "None") ?
-            (idFilter.includes(d.id) ? 0.9 : 0.6) : 0.1)
-        .on('mouseover', function (event,d) {
+            (idFilter.includes(d.id) ? 0.9 : 0.6) : 0.1);
+
+    // Handle mouse events
+    activeCircles.on('mouseover', function (event,d) {
       if (d.gender === genderFilter || genderFilter === "None") {
         if (!idFilter.includes(d.id)) {
           d3.select(this)
