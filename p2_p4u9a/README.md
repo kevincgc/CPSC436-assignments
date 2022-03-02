@@ -2,22 +2,13 @@
 
 Resources used:
 
-**Tutorial bar chart example:**  
-https://githubbox.com/UBC-InfoVis/2021-436V-examples/tree/master/d3-interactive-bar-chart
-I used the html-based legend from here. I changed the markers to circles and I split the selections into two columns.
+**Tutorial advanced interactivity example with barchart and scatterplot:**  
+https://githubbox.com/UBC-InfoVis/2021-436V-examples/tree/master/d3-linked-charts-basic  
+I used this as the basis for my bar chart and scatterplot classes. I also used it to learn how to apply interactions
+between different charts through main.js.
 
-**Tutorial advanced interactivity example:**  
-https://githubbox.com/UBC-InfoVis/2021-436V-examples/tree/master/d3-linked-charts-basic
-I used the html-based legend from here. I changed the markers to circles and I split the selections into two columns.
+**P1:**  
+I used my P1 code to apply the clip mask to the lexis chart, to help me create the mouseover tooltip popups, and as 
+a reference on how to handle interactions with the HTML dropdown menu.
 
-**D3 Case Study: The Impact of Vaccines on the Measles:**  
-https://github.com/UBC-InfoVis/436V-materials/tree/22Jan/case-studies/case-study_measles-and-vaccines  
-I used this to help me make the hovering tooltip by modifying the mouseover function. I also used it to help me draw the
-marks, since the horizontally lined cells were similar in layout to the semicircles in the assignment.
-
-**D3 Case Study: Drought and Deluge in the Lower 48:**  
-https://github.com/UBC-InfoVis/436V-materials/tree/22Jan/case-studies/case-study_drought  
-I used this to help understand how to show the dynamic labels and how to format my top axis.
-
-https://stackoverflow.com/questions/32964457/match-arrowhead-color-to-line-color-in-d3
-I used this to modify the marker color without having to copy paste the code a bunch of times.
+I used css styles from P0 and P1.

@@ -1,5 +1,4 @@
 class ScatterPlot {
-
     /**
      * Class constructor with basic chart configuration
      * @param {Object}
@@ -38,13 +37,10 @@ class ScatterPlot {
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(6)
             .tickSize(-vis.height + 10);
-        // .tickPadding(10)
-        // .tickFormat(d => d + ' km');
 
         vis.yAxis = d3.axisLeft(vis.yScale)
             .ticks(6)
-            .tickSize(-vis.width - 10)
-        //.tickPadding(10);
+            .tickSize(-vis.width - 10);
 
         // Define size of SVG drawing area
         vis.svg = d3.select(vis.config.parentElement).append('svg')
@@ -113,46 +109,35 @@ class ScatterPlot {
         const activeCircles = vis.chart.selectAll('.point')
             .data(vis.data, d => d)
             .join('circle')
-            .attr('class', d => (d.gender === genderFilter || genderFilter === "None") ? 'point active' : 'point inactive')
+            .attr('class', d => (d.gender === genderFilter || genderFilter === "None") ?
+                (idFilter.includes(d.id) ? "point selected" : "point active") : 'point inactive')
             .attr('r', 5)
             .attr('cy', d => vis.yScale(vis.yValue(d)))
-            .attr('cx', d => vis.xScale(vis.xValue(d)))
-            .attr('fill', d => (d.gender === genderFilter || genderFilter === "None") ?
-                (idFilter.includes(d.id) ? "#FFA500" : "#333355") : "#333355")
-            .attr("fill-opacity", d => (d.gender === genderFilter || genderFilter === "None") ?
-                (idFilter.includes(d.id) ? 0.9 : 0.6) : 0.1);
+            .attr('cx', d => vis.xScale(vis.xValue(d)));
 
         // Handle mouse events
         activeCircles.on('mouseover', function (event, d) {
             if (d.gender === genderFilter || genderFilter === "None") {
-                if (!idFilter.includes(d.id)) {
-                    d3.select(this)
-                        .attr("fill", "#222")
-                        .attr("fill-opacity", 1);
-                }
                 d3.select('#tooltip')
                     .style('display', 'block')
                     .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                     .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
                     .html(`
-              <div class="tooltip-title">${d.leader}</div>
-              <div><i>${d.country}, ${d.start_year} - ${d.end_year}</i></div>
-              <ul>
-                <li>Age at inauguration: ${d.start_age}</li>
-                <li>Time in office: ${d.duration} ${d.duration > 1 ? "years" : "year"}</li>
-                <li>GDP/Capita: ${d.pcgdp === null ? "Not Available" : Math.round(d.pcgdp)}</li>
-              </ul>
-            `);
+                          <div class="tooltip-title">${d.leader}</div>
+                          <div><i>${d.country}, ${d.start_year} - ${d.end_year}</i></div>
+                          <ul>
+                            <li>Age at inauguration: ${d.start_age}</li>
+                            <li>Time in office: ${d.duration} ${d.duration > 1 ? "years" : "year"}</li>
+                            <li>GDP/Capita: ${d.pcgdp === null ? "Not Available" : Math.round(d.pcgdp)}</li>
+                          </ul>
+                        `);
             }
-
         })
             .on('mouseleave', function (event, d) {
-                if ((d.gender === genderFilter || genderFilter === "None") && !idFilter.includes(d.id)) {
-                    d3.select(this).attr("fill", "#333355").attr("fill-opacity", 0.6);
-                }
                 d3.select('#tooltip').style('display', 'none');
             })
             .on('click', function (event, d) {
+                d3.select('#tooltip').style('display', 'none');
                 event.stopPropagation();
                 if (d.gender === genderFilter || genderFilter === "None") {
                     updateSelection(d);
@@ -161,13 +146,10 @@ class ScatterPlot {
 
         // Update the axes/gridlines
         // We use the second .call() to remove the axis and just show gridlines
-        vis.xAxisG
-            .call(vis.xAxis)
+        vis.xAxisG.call(vis.xAxis)
             .call(g => g.select('.domain').remove());
 
-        vis.yAxisG
-            .call(vis.yAxis)
-            .call(g => g.select('.domain').remove())
+        vis.yAxisG.call(vis.yAxis)
+            .call(g => g.select('.domain').remove());
     }
-
 }

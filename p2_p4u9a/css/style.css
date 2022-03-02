@@ -1,5 +1,44 @@
-/* Todo: add styles */
-/* bar */
+body {
+    padding: 20px;
+    background: #f8f8f8;
+}
+
+h1 {
+    font-family: 'Castoro', serif;
+    font-style: italic;
+    font-size: 2rem;
+    word-spacing: 0.15em;
+}
+
+svg {
+    outline: thin solid #ddd;
+    border-radius: 2pt;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 700px;
+    width: 1100px;
+}
+
+#vis-bar {
+    width: 250px;
+    margin: 10px;
+}
+
+#vis-scatter {
+    width: 600px;
+    margin: 10px;
+}
+
+#vis-lexis {
+    width: 1000px;
+    margin: 10px;
+}
+
+/* Barchart */
 .bar {
     shape-rendering: crispEdges;
 }
@@ -10,29 +49,26 @@
     cursor: pointer;
 }
 
-svg {
-    outline: thin solid #ddd;
-    border-radius: 2pt;
-}
-.container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    height: 700px;
-    width: 1100px;
+/* Scatterplot */
+.point.active:hover,
+.point.selected:hover {
+    stroke: #222;
+    cursor: pointer;
 }
 
-#vis-bar{
-    width: 250px;
-    margin: 10px;
+.point.active {
+    fill: #333355;
+    fill-opacity: 0.6;
 }
-#vis-scatter {
-    width: 600px;
-    margin: 10px;
+
+.point.inactive {
+    fill: #333355;
+    fill-opacity: 0.1;
 }
-#vis-lexis{
-    width: 1000px;
-    margin: 10px;
+
+.point.selected {
+    fill: #FFA500;
+    fill-opacity: 0.9;
 }
 
 .labels {
@@ -42,69 +78,23 @@ svg {
     font-weight: bold;
 }
 
-.point.active:hover {
-    stroke: #222;
-    cursor: pointer;
-}
-body {
-    padding: 20px;
-    background: #f8f8f8;
-}
-h1 {
-    font-family: 'Castoro', serif;
-    font-style: italic;
-    font-size: 2rem;
-    word-spacing: 0.15em;
-}
-/*.container {*/
-/*    width: 740px;*/
-/*    margin: 0 auto;*/
-/*}*/
-
-/*#footer {*/
-/*    font-size: 11px;*/
-/*    display: flex;*/
-/*}*/
-/*#footer .footer-col {*/
-/*    flex: 1;*/
-/*}*/
-/*h1 {*/
-/*    font-family: 'Lora', serif;*/
-/*    font-size: 1.4rem;*/
-/*}*/
-
+/* Axis */
 .axis-title {
     font-family: 'Castoro', sans-serif;
     fill: #000000;
     font-size: 16px;
     font-weight: bold;
 }
-/*.axis path {*/
-/*    shape-rendering: crispEdges;*/
-/*    stroke: #888;*/
-/*}*/
-/*.y-axis path {*/
-/*    display: none;*/
-/*}*/
+
 .axis line {
     stroke: #ddd;
 }
-.axis{
+
+.axis {
     font-family: 'Castoro', sans-serif;
     font-size: 12px;
     color: #333;
 }
-/*.btn {*/
-/*    font-size: 11px;*/
-/*    color: #adadad;*/
-/*}*/
-/*#sorting:hover, #sorting:focus {*/
-/*    text-decoration: none;*/
-/*    box-shadow: none;*/
-/*}*/
-/*#sorting img {*/
-/*    opacity: 0.8;*/
-/*}*/
 
 /* Tooltip */
 #tooltip {

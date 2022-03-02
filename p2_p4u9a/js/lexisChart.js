@@ -1,5 +1,4 @@
 class LexisChart {
-
     /**
      * Class constructor with initial configuration
      * @param {Object}
@@ -23,6 +22,10 @@ class LexisChart {
     initVis() {
         let vis = this;
 
+        // Calculate inner chart size. Margin specifies the space around the actual chart.
+        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
+        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
+
         // Define size of SVG drawing area
         vis.svg = d3.select(vis.config.parentElement).append('svg')
             .attr('id', 'lexis-chart')
@@ -36,11 +39,6 @@ class LexisChart {
 
         vis.chart = vis.chartArea.append('g');
 
-        // Todo: initialize scales, axes, static elements, etc.
-        // Calculate inner chart size. Margin specifies the space around the actual chart.
-        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
-        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
-
         // Initialize scales
         vis.xScale = d3.scaleLinear()
             .range([0, vis.width]);
@@ -52,13 +50,9 @@ class LexisChart {
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(6)
             .tickFormat(d3.format(".0f"));
-            //.tickSize(-vis.height - 10);
-        // .tickPadding(10)
-        // .tickFormat(d => d + ' km');
 
         vis.yAxis = d3.axisLeft(vis.yScale)
-            .ticks(6)
-            //.tickSize(-vis.width - 10)
+            .ticks(6);
 
         // Append empty x-axis group and move it to the bottom of the chart
         vis.xAxisG = vis.chart.append('g')
@@ -74,7 +68,7 @@ class LexisChart {
             .append('clipPath')
             .attr('id', 'chart-mask')
             .append('rect')
-            .attr('width', vis.width+ 5)
+            .attr('width', vis.width + 5)
             .attr('y', -vis.config.margin.top)
             .attr('height', vis.config.containerHeight);
 
@@ -82,14 +76,24 @@ class LexisChart {
         vis.chart = vis.chartArea.append('g')
             .attr('clip-path', 'url(#chart-mask)');
 
+        // Append axis title
+        vis.svg.append('text')
+            .attr('class', 'axis-title')
+            .attr('x', 10)
+            .attr('y', 10)
+            .attr('dy', '.71em')
+            .text('Age');
+
         vis.appendMarkers(vis);
-        //.tickPadding(10);
     }
 
-
+    /**
+     * Prepare the data and scales before we render it.
+     */
     updateVis() {
         let vis = this;
 
+        // Specific accessor functions
         vis.xStartValue = d => d.start_year;
         vis.xEndValue = d => d.end_year;
         vis.yStartValue = d => d.start_age;
@@ -104,46 +108,48 @@ class LexisChart {
         vis.renderVis();
     }
 
-
+    /**
+     * Bind data to visual elements (enter-update-exit) and update axes
+     */
     renderVis() {
         let vis = this;
 
-        // Add circles
-        const lines = vis.chart.selectAll('.unselected')
+        // Add arrows
+        const arrows = vis.chart.selectAll('.arrow')
             .data(vis.filteredData, d => d)
             .join('line')
-            .attr('class', 'arrow unselected')
+            .attr('class', 'arrow')
             .attr("x1", d => vis.xScale(vis.xStartValue(d)))
             .attr("y1", d => vis.yScale(vis.yStartValue(d)))
             .attr("x2", d => vis.xScale(vis.xEndValue(d)))
             .attr("y2", d => vis.yScale(vis.yEndValue(d)))
-            .attr('marker-end', d => idFilter.includes(d.id) ? "url(#FFA500)":
+            .attr('marker-end', d => idFilter.includes(d.id) ? "url(#FFA500)" :
                 (d.label === 1 ? "url(#999)" : "url(#ddd)"))
             .style("stroke", d => idFilter.includes(d.id) ? "#FFA500" : (d.label === 1 ? "#A4A5C2" : "#ddd"))
             .style("stroke-width", d => (d.label === 1 || idFilter.includes(d.id)) ? 3 : 1);
 
-        lines
-            .on('mouseover', function (event, d) {
-                if (!idFilter.includes(d.id)) {
-                    d3.select(this)
-                        .style("stroke", "#A4A5C2")
-                        .style("stroke-width", 3)
-                        .attr('marker-end', "url(#999)");
-                }
-                d3.select('#tooltip')
+        // Event handler for mouse actions
+        arrows.on('mouseover', function (event, d) {
+            if (!idFilter.includes(d.id)) {
+                d3.select(this)
+                    .style("stroke", "#A4A5C2")
+                    .style("stroke-width", 3)
+                    .attr('marker-end', "url(#999)");
+            }
+            d3.select('#tooltip')
                 .style('display', 'block')
                 .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
                 .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
                 .html(`
-                  <div class="tooltip-title">${d.leader}</div>
-                  <div><i>${d.country}, ${d.start_year} - ${d.end_year}</i></div>
-                  <ul>
-                    <li>Age at inauguration: ${d.start_age}</li>
-                    <li>Time in office: ${d.duration} ${d.duration > 1 ? "years" : "year"}</li>
-                    <li>GDP/Capita: ${d.pcgdp === null ? "Not Available" : Math.round(d.pcgdp)}</li>
-                  </ul>
-                `);
-            })
+                      <div class="tooltip-title">${d.leader}</div>
+                      <div><i>${d.country}, ${d.start_year} - ${d.end_year}</i></div>
+                      <ul>
+                        <li>Age at inauguration: ${d.start_age}</li>
+                        <li>Time in office: ${d.duration} ${d.duration > 1 ? "years" : "year"}</li>
+                        <li>GDP/Capita: ${d.pcgdp === null ? "Not Available" : Math.round(d.pcgdp)}</li>
+                      </ul>
+                    `);
+        })
             .on('mouseleave', function (event, d) {
                 if (!idFilter.includes(d.id) && d.label !== 1) {
                     d3.select(this)
@@ -154,40 +160,32 @@ class LexisChart {
                 d3.select('#tooltip').style('display', 'none');
             })
             .on('click', function (event, d) {
-                if (d.gender === genderFilter || genderFilter === "None") {
-                    updateSelection(d);
-                }
+                d3.select('#tooltip').style('display', 'none');
+                updateSelection(d);
             });
 
-        const text = vis.chart.selectAll('.labels')
+        // Arrow label for selected leaders
+        vis.chart.selectAll('.labels')
             .data(vis.filteredData, d => d)
             .join('text')
             .attr('class', 'labels')
             .attr('transform', d =>
                 `translate(${vis.xScale(vis.xStartValue(d)) + 3},${vis.yScale(vis.yStartValue(d)) - 7}) rotate(-20)`)
-            .text(d => d.label === 1 ? d.leader: "");
+            .text(d => d.label === 1 ? d.leader : "");
 
         // Update the axes/gridlines
         // We use the second .call() to remove the axis and just show gridlines
-        vis.xAxisG
-            .call(vis.xAxis)
+        vis.xAxisG.call(vis.xAxis)
             .call(g => g.select('.domain').remove());
 
-        vis.yAxisG
-            .call(vis.yAxis)
+        vis.yAxisG.call(vis.yAxis)
             .call(g => g.select('.domain').remove());
-
-        vis.svg.append('text')
-            .attr('class', 'axis-title')
-            .attr('x', 10)
-            .attr('y', 10)
-            .attr('dy', '.71em')
-            .text('Age');
     }
 
+    /**
+     * Adds arrow heads with different appearances
+     */
     appendMarkers(vis) {
-        // Create default arrow head
-        // Can be applied to SVG lines using: `marker-end`
         vis.chart.append('defs').append('marker')
             .attr('id', 'FFA500')
             .attr('markerUnits', 'strokeWidth')
@@ -200,6 +198,7 @@ class LexisChart {
             .attr('d', 'M0,0 L2,2 L 0,4')
             .attr('stroke', '#FFA500')
             .attr('fill', 'none');
+
         vis.chart.append('defs').append('marker')
             .attr('id', '999')
             .attr('markerUnits', 'strokeWidth')
@@ -212,6 +211,7 @@ class LexisChart {
             .attr('d', 'M0,0 L2,2 L 0,4')
             .attr('stroke', '#999')
             .attr('fill', 'none');
+
         vis.chart.append('defs').append('marker')
             .attr('id', 'ddd')
             .attr('markerUnits', 'strokeWidth')
@@ -224,6 +224,5 @@ class LexisChart {
             .attr('d', 'M0,0 L2,2 L 0,4')
             .attr('stroke', '#ddd')
             .attr('fill', 'none');
-        //return "url(" + color + ")";
     }
 }
