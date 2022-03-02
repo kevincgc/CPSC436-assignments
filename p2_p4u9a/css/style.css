@@ -11,11 +11,11 @@
 }
 
 /*scatter*/
-.point.active:hover,
-.point.selected:hover {
-    stroke: #222;
-    fill-opacity: 1;
-}
+/*.point.active:hover,*/
+/*.point.selected:hover {*/
+/*    stroke: #222;*/
+/*    fill-opacity: 1;*/
+/*}*/
 /*body {*/
 /*    padding: 30px;*/
 /*    background: #f8f8f8;*/

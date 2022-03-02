@@ -5,7 +5,7 @@ class ScatterPlot {
    * @param {Object}
    * @param {Array}
    */
-  constructor(_config, _data, _dataActive, _dataInactive) {
+  constructor(_config, _data) {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 600,
@@ -14,8 +14,6 @@ class ScatterPlot {
       tooltipPadding: _config.tooltipPadding || 15
     }
     this.data = _data;
-    this.dataActive = _dataActive;
-    this.dataInactive = _dataInactive;
     this.initVis();
   }
 
@@ -99,8 +97,6 @@ class ScatterPlot {
     vis.xScale.domain([0, d3.max(vis.data, vis.xValue)]);
     vis.yScale.domain([25, 95]);
 
-    vis.dataSelected = vis.dataActive.filter(d => idFilter.includes(d.id));
-    vis.dataUnselected = vis.dataActive.filter(d => !(idFilter.includes(d.id)));
     vis.renderVis();
   }
 
@@ -112,56 +108,52 @@ class ScatterPlot {
 
     // Add circles
     const activeCircles = vis.chart.selectAll('.active')
-        .data(vis.dataUnselected, d => d)
+        .data(vis.data, d => d)
         .join('circle')
         .attr('class', 'point active')
         .attr('r', 5)
         .attr('cy', d => vis.yScale(vis.yValue(d)))
         .attr('cx', d => vis.xScale(vis.xValue(d)))
-        .attr('fill', "#333355")
-        .attr("fill-opacity", "0.6");
+        .attr('fill', d => (d.gender === genderFilter || genderFilter === "None") ?
+            (idFilter.includes(d.id) ? "#FFA500" : "#333355") : "#333355")
+        .attr("fill-opacity", d => (d.gender === genderFilter || genderFilter === "None") ?
+            (idFilter.includes(d.id) ? 0.9 : 0.6) : 0.1)
+        .on('mouseover', function (event,d) {
+      if (d.gender === genderFilter || genderFilter === "None") {
+        if (!idFilter.includes(d.id)) {
+          d3.select(this)
+              .attr("fill", "#222")
+              .attr("fill-opacity", 1);
+        }
+        d3.select(this).style("stroke", "black");
+        d3.select('#tooltip')
+            .style('display', 'block')
+            .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+            .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
+            .html(`
+              <div class="tooltip-title">${d.leader}</div>
+              <div><i>${d.country}, ${d.start_year} - ${d.end_year}</i></div>
+              <ul>
+                <li>Age at inauguration: ${d.start_age}</li>
+                <li>Time in office: ${d.duration} ${d.duration > 1 ? "years" : "year"}</li>
+                <li>GDP/Capita: ${d.pcgdp === null ? "Not Available" : Math.round(d.pcgdp)}</li>
+              </ul>
+            `);
+      }
 
-    // Add circles
-    const inactiveCircles = vis.chart.selectAll('.inactive')
-        .data(vis.dataInactive, d => d)
-        .join('circle')
-        .attr('class', 'point inactive')
-        .attr('r', 5)
-        .attr('cy', d => vis.yScale(vis.yValue(d)))
-        .attr('cx', d => vis.xScale(vis.xValue(d)))
-        .attr('fill', "#333355")
-        .attr("fill-opacity", "0.1");
-
-    // Add circles
-    const selectedCircles = vis.chart.selectAll('.selected')
-        .data(vis.dataSelected, d => false)
-        .join('circle')
-        .attr('class', 'point selected')
-        .attr('r', 5)
-        .attr('cy', d => vis.yScale(vis.yValue(d)))
-        .attr('cx', d => vis.xScale(vis.xValue(d)))
-        .attr('fill', "#FFA500")
-        .attr("fill-opacity", "0.9");
-
-    // Tooltip event listeners
-    activeCircles.on('mouseover', (event,d) => {
-      vis.tooltipHandler(d, vis);
         })
-        .on('mouseleave', () => {
-          d3.select('#tooltip').style('display', 'none');
-        })
-        .on('click', function(event, d) {
-          updateSelection(d);
-        });
-
-    selectedCircles.on('mouseover', (event,d) => {
-      vis.tooltipHandler(d, vis);
-    })
-        .on('mouseleave', () => {
-          d3.select('#tooltip').style('display', 'none');
+        .on('mouseleave', function(event,d) {
+          if ((d.gender === genderFilter || genderFilter === "None") && !idFilter.includes(d.id)) {
+            d3.select(this).attr("fill", "#333355").attr("fill-opacity", 0.6);
+          }
+            d3.select(this).style("stroke", "none");
+            d3.select('#tooltip').style('display', 'none');
         })
         .on('click', function(event, d) {
-          updateSelection(d);
+          if (d.gender === genderFilter || genderFilter === "None") {
+            updateSelection(d);
+          }
+
         });
 
     // Update the axes/gridlines
@@ -175,19 +167,4 @@ class ScatterPlot {
         .call(g => g.select('.domain').remove())
   }
 
-  tooltipHandler(d, vis) {
-    d3.select('#tooltip')
-        .style('display', 'block')
-        .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
-        .style('top', (event.pageY + vis.config.tooltipPadding) + 'px')
-        .html(`
-              <div class="tooltip-title">${d.leader}</div>
-              <div><i>${d.country}, ${d.start_year} - ${d.end_year}</i></div>
-              <ul>
-                <li>Age at inauguration: ${d.start_age}</li>
-                <li>Time in office: ${d.duration} ${d.duration > 1 ? "years" : "year"}</li>
-                <li>GDP/Capita: ${d.pcgdp === null ? "Not Available" : Math.round(d.pcgdp)}</li>
-              </ul>
-            `);
-  }
 }

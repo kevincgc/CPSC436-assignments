@@ -1,4 +1,4 @@
-let data, scatterplot, barchart, lexischart, filteredData, genderFilter, idFilter = [];
+let data, scatterplot, barchart, lexischart, filteredData, genderFilter = "None", idFilter = [];
 /**
  * Load data from CSV file asynchronously and render charts
  */
@@ -25,12 +25,12 @@ d3.csv('data/leaderlist.csv').then(_data => {
   barchart.updateVis();
   scatterplot = new ScatterPlot({
     parentElement: '#vis-scatter'
-  }, filteredData, filteredData.filter(d => d.pcgdp !== null), []);
+  }, filteredData.filter(d => d.pcgdp !== null));
   scatterplot.updateVis();
-  lexischart = new LexisChart({
-    parentElement: '#vis-lexis'
-  }, filteredData);
-  lexischart.updateVis();
+  // lexischart = new LexisChart({
+  //   parentElement: '#vis-lexis'
+  // }, filteredData);
+  // lexischart.updateVis();
 }).catch(error => console.error(error));
 
 /**
@@ -52,13 +52,6 @@ d3.select('#country-selector').on('change', function() {
  * Use bar chart as filter and update scatter plot accordingly
  */
 function filterByGender() {
-  if (genderFilter === "None") {
-    scatterplot.dataActive = filteredData.filter(d => d.pcgdp !== null);
-    scatterplot.dataInactive = [];
-  } else {
-    scatterplot.dataActive = filteredData.filter(d => d.gender === genderFilter && d.pcgdp !== null);
-    scatterplot.dataInactive = filteredData.filter(d => d.gender !== genderFilter && d.pcgdp !== null);
-  }
   scatterplot.updateVis();
 }
 
